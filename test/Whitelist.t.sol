@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test} from "forge-std/Test.sol";
 import {Whitelist} from "../src/Whitelist.sol";
-he
+
 contract WhitelistTest is Test {
     Whitelist public whitelist;
 
@@ -11,7 +11,12 @@ contract WhitelistTest is Test {
         whitelist = new Whitelist();
     }
 
-    function test_getGreeting() public view {
-        assertEq(whitelist.getGreeting(), "Hello, World!");
+    function test_CallerIsAdmin() public view {
+        assertEq(whitelist.isAdmin(address(this)), true);
+    }
+
+    function testFail_CallerIsNotAdmin() public {
+        vm.prank(address(0));
+        assertEq(whitelist.isAdmin(address(this)), false);
     }
 }
