@@ -68,4 +68,34 @@ contract WhitelistTest is Test {
         vm.expectRevert("revert");
         whitelist.withdraw();
     }
+
+    function test_ApproveApplication() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+
+        assertEq(whitelist.isPending(pendingUser), true);
+
+        vm.stopPrank();
+
+        vm.startPrank(address(this));
+        whitelist.approveApplication(pendingUser);
+
+        assertEq(whitelist.isPending(pendingUser), false);
+        assertEq(whitelist.isGranted(pendingUser), true);
+
+        vm.stopPrank();
+    }
+
+    function testFail_ApproveApplication_NotAdmin() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+        vm.stopPrank();
+
+        vm.startPrank(nonAdmin);
+
+        vm.expectRevert("revert");
+        whitelist.approveApplication(pendingUser);
+
+        vm.stopPrank();
+    }
 }
