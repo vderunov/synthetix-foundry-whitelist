@@ -4,11 +4,17 @@ pragma solidity ^0.8.13;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract Whitelist is AccessControl {
-    bytes32 public constant PENDING_USER_ROLE = keccak256("PENDING");
-    bytes32 public constant GRANTED_USER_ROLE = keccak256("GRANTED");
+    bytes32 public constant PENDING_USER_ROLE = "PENDING";
+    bytes32 public constant GRANTED_USER_ROLE = "GRANTED";
 
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+
+    function transferOwnership(address newOwner) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(newOwner != address(0), "New owner is the zero address");
+        _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
+        _revokeRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function applyForWhitelist() public {
