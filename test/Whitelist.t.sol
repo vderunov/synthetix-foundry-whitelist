@@ -64,8 +64,8 @@ contract WhitelistTest is Test {
         vm.stopPrank();
     }
 
-    function testFail_WithdrawFromWhitelist() public {
-        vm.expectRevert("revert");
+    function testFail_RevertWhen_WithdrawWithoutCallerConfirmation() public {
+        vm.expectRevert();
         whitelist.withdraw();
     }
 
@@ -77,24 +77,52 @@ contract WhitelistTest is Test {
 
         vm.stopPrank();
 
-        vm.startPrank(address(this));
         whitelist.approveApplication(pendingUser);
 
         assertEq(whitelist.isPending(pendingUser), false);
         assertEq(whitelist.isGranted(pendingUser), true);
-
-        vm.stopPrank();
     }
 
-    function testFail_ApproveApplication_NotAdmin() public {
+    function testFail_RevertWhen_ApproveApplication_NotAdmin() public {
         vm.startPrank(pendingUser);
         whitelist.applyForWhitelist();
         vm.stopPrank();
 
         vm.startPrank(nonAdmin);
 
-        vm.expectRevert("revert");
         whitelist.approveApplication(pendingUser);
+
+        vm.stopPrank();
+    }
+
+    function test_RevokeRole() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+        vm.stopPrank();
+
+        whitelist.approveApplication(pendingUser);
+
+        assertEq(whitelist.isPending(pendingUser), false);
+        assertEq(whitelist.isGranted(pendingUser), true);
+
+        whitelist.revoke(pendingUser);
+
+        assertEq(whitelist.isGranted(pendingUser), false);
+    }
+
+    function testFail_RevokeRole_NotAdmin() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+        vm.stopPrank();
+
+        whitelist.approveApplication(pendingUser);
+
+        assertEq(whitelist.isPending(pendingUser), false);
+        assertEq(whitelist.isGranted(pendingUser), true);
+
+        vm.startPrank(pendingUser);
+
+        whitelist.revoke(pendingUser);
 
         vm.stopPrank();
     }
