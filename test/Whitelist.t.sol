@@ -126,4 +126,54 @@ contract WhitelistTest is Test {
 
         vm.stopPrank();
     }
+
+    function test_isGranted_notGranted() public view {
+        assertEq(whitelist.isGranted(nonAdmin), false);
+    }
+
+    function test_isGranted_Granted() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+        vm.stopPrank();
+
+        whitelist.approveApplication(pendingUser);
+
+        assertEq(whitelist.isPending(pendingUser), false);
+        assertEq(whitelist.isGranted(pendingUser), true);
+    }
+
+    function test_isPending_notPending() public view {
+        assertEq(whitelist.isPending(nonAdmin), false);
+    }
+
+    function test_isPending_Pending() public {
+        vm.startPrank(nonUser);
+        whitelist.applyForWhitelist();
+        assertEq(whitelist.isPending(nonUser), true);
+    }
+
+    function test_isPending_afterApplicationApproval() public {
+        vm.startPrank(pendingUser);
+        whitelist.applyForWhitelist();
+        vm.stopPrank();
+
+        whitelist.approveApplication(pendingUser);
+
+        assertEq(whitelist.isPending(pendingUser), false);
+        assertEq(whitelist.isGranted(pendingUser), true);
+    }
+
+    function test_isAdmin_NonAdmin() public view {
+        assertEq(whitelist.isAdmin(nonAdmin), false);
+    }
+
+    function test_isAdmin_Admin() public view {
+        assertEq(whitelist.isAdmin(address(this)), true);
+    }
+
+    function test_isAdmin_AfterOwnershipTransferred() public {
+        whitelist.transferOwnership(nonAdmin);
+        assertEq(whitelist.isAdmin(nonAdmin), true);
+        assertEq(whitelist.isAdmin(address(this)), false);
+    }
 }
