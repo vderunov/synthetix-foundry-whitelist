@@ -57,7 +57,7 @@ contract WhitelistTest is Test {
 
         assertEq(whitelist.isPending(pendingUser), true);
 
-        whitelist.withdraw();
+        whitelist.renounceAssignedRole();
 
         assertEq(whitelist.isPending(pendingUser), false);
 
@@ -66,7 +66,7 @@ contract WhitelistTest is Test {
 
     function testFail_RevertWhen_WithdrawWithoutCallerConfirmation() public {
         vm.expectRevert();
-        whitelist.withdraw();
+        whitelist.renounceAssignedRole();
     }
 
     function test_ApproveApplication() public {
@@ -105,7 +105,7 @@ contract WhitelistTest is Test {
         assertEq(whitelist.isPending(pendingUser), false);
         assertEq(whitelist.isGranted(pendingUser), true);
 
-        whitelist.revoke(pendingUser);
+        whitelist.revokeAccess(pendingUser);
 
         assertEq(whitelist.isGranted(pendingUser), false);
     }
@@ -122,7 +122,7 @@ contract WhitelistTest is Test {
 
         vm.startPrank(pendingUser);
 
-        whitelist.revoke(pendingUser);
+        whitelist.revokeAccess(pendingUser);
 
         vm.stopPrank();
     }
