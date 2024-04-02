@@ -1,66 +1,110 @@
-## Foundry
-
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
 ## Usage
+
+### Dependencies Installation
+
+```shell
+yarn install
+```
 
 ### Build
 
 ```shell
-$ forge build
+forge build
 ```
+### Config Your Environment File
 
-### Test
+Copy env template and fill private keys and addresses in .env
 
 ```shell
-$ forge test
+cp .env.template .env
 ```
+### Environment Config
 
-### Format
+This command loads variables from the .env file into your current shell session, providing your application access to these variables. Note that you typically need to run this command once for each shell session.
 
 ```shell
-$ forge fmt
+source .env
 ```
+### Deploy and Verify
 
-### Gas Snapshots
+|  Parameter | Value |
+|---|-------|
+|  Network Name |  OP Sepolia |
+|  Chain ID |  11155420 |
 
 ```shell
-$ forge snapshot
+forge create --rpc-url $RPC --chain 11155420 --private-key $PK_ADMIN --etherscan-api-key $SEPOLIA_OPTIMISM_ETHERSCAN --verify src/Whitelist.sol:Whitelist
 ```
+## Test interactions
 
-### Anvil
+Check `admin` role
 
 ```shell
-$ anvil
-```
+cast call --rpc-url $RPC $WL 'isAdmin(address)(bool)' $AD_ADMIN
 
-### Deploy
+# => 'true', when the specified address is granted `admin` role
+```
+Check `admin` role for AD_TEST1
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+cast call --rpc-url $RPC $WL 'isAdmin(address)(bool)' $AD_TEST1
 
-### Cast
+# => 'false', when the specified address is not granted `admin` role
+```
+Send Ether to AD_TEST1
 
 ```shell
-$ cast <subcommand>
-```
+cast send --private-key $PK_ADMIN --rpc-url $RPC --value 0.1ether $AD_TEST1
 
-### Help
+# => transaction details
+```
+Apply for Whitelist with AD_TEST1
 
 ```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+cast send --rpc-url $RPC --private-key $PK_TEST1 $WL 'applyForWhitelist()'
+
+# => transaction details
+```
+Check Whitelist `pending` role for AD_TEST1
+
+```shell
+cast call --rpc-url $RPC $WL 'isPending(address)(bool)' $AD_TEST1
+
+# => 'true', when the specified address is granted `pending` role
+```
+Approve Whitelist Application for AD_TEST1
+
+```shell
+cast send --rpc-url $RPC --private-key $PK_ADMIN $WL 'approveApplication(address)' $AD_TEST1
+
+# => 'true', when the specified address is given `granted` role
+```
+
+Check `granted` role for AD_TEST1
+
+```shell
+cast call --rpc-url $RPC $WL 'isGranted(address)(bool)' $AD_TEST1
+
+# => 'true', when the specified address is given `granted` role
+```
+## Development
+
+### Generate readable ABI
+
+Creates `Whitelist.json` in the project root
+
+```sh
+node readable-abi.js out/Whitelist.sol/Whitelist.json
+```
+
+### Run tests
+
+```shell
+forge test 
+```
+
+### Test coverage
+
+```shell
+forge coverage 
 ```

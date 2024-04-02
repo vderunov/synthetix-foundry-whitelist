@@ -8,21 +8,21 @@ contract Whitelist is AccessControl {
     bytes32 public constant GRANTED = "granted";
 
     constructor() {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function transferOwnership(address newOwner) public onlyRole(DEFAULT_ADMIN_ROLE) {
         require(newOwner != address(0), "New owner is the zero address");
         _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
-        _revokeRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _revokeRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function applyForWhitelist() public {
-        _grantRole(PENDING, msg.sender);
+        _grantRole(PENDING, _msgSender());
     }
 
-    function withdraw() public {
-        renounceRole(PENDING, msg.sender);
+    function renounceAssignedRole() public {
+        renounceRole(PENDING, _msgSender());
     }
 
     function approveApplication(address user) public onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -30,7 +30,7 @@ contract Whitelist is AccessControl {
         _revokeRole(PENDING, user);
     }
 
-    function revoke(address user) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function revokeAccess(address user) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _revokeRole(GRANTED, user);
     }
 
