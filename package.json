@@ -1,9 +1,16 @@
 {
-  "name": "synthetix-foundry-whitelist",
+  "name": "@vderunov/whitelist-contract",
   "version": "1.0.0",
   "packageManager": "yarn@4.1.1",
   "license": "MIT",
-  "private": true,
+  "files": [
+    "deployments",
+    "src"
+  ],
+  "scripts": {
+    "prepublishOnly": "node generateDeployments.js",
+    "build": "forge build && node generateDeployments.js"
+  },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "ethers": "^6.11.1",

@@ -24,3 +24,5 @@ docs/
 !.yarn/versions
 
 node_modules
+
+deployments
