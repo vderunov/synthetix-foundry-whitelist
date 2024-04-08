@@ -42,6 +42,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vderunov/whitelist-contract@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@vderunov/whitelist-contract@workspace:."
+  dependencies:
+    "@openzeppelin/contracts": "npm:^5.0.2"
+    ethers: "npm:^6.11.1"
+    forge-std: "github:foundry-rs/forge-std#master"
+  languageName: unknown
+  linkType: soft
+
 "aes-js@npm:4.0.0-beta.5":
   version: 4.0.0-beta.5
   resolution: "aes-js@npm:4.0.0-beta.5"
@@ -70,16 +80,6 @@ __metadata:
   checksum: 10c0/7f1cbe3b0f8d2c4e5e23cfeb0004eb58034069605b491ad15a61f0c50331073207cc74d731b80aede8cb4f04dd9553e5f656f2f22d4dfaeb3cc9e3c1fe89d192
   languageName: node
   linkType: hard
-
-"synthetix-foundry-whitelist@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "synthetix-foundry-whitelist@workspace:."
-  dependencies:
-    "@openzeppelin/contracts": "npm:^5.0.2"
-    ethers: "npm:^6.11.1"
-    forge-std: "github:foundry-rs/forge-std#master"
-  languageName: unknown
-  linkType: soft
 
 "tslib@npm:2.4.0":
   version: 2.4.0
