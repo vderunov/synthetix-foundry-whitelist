@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "prepublishOnly": "node generateDeployments.js",
-    "build": "forge build && node generateDeployments.js"
+    "build": "forge build && node generateDeployments.js",
+    "test": "forge test"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
