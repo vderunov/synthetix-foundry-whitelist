@@ -17,11 +17,11 @@ contract Whitelist is AccessControl {
         _revokeRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
-    function applyForWhitelist() public {
+    function submitApplication() public {
         _grantRole(PENDING, _msgSender());
     }
 
-    function renounceAssignedRole() public {
+    function withdrawApplication() public {
         renounceRole(PENDING, _msgSender());
     }
 
@@ -30,7 +30,7 @@ contract Whitelist is AccessControl {
         _revokeRole(PENDING, user);
     }
 
-    function revokeAccess(address user) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function rejectApplication(address user) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _revokeRole(GRANTED, user);
     }
 
