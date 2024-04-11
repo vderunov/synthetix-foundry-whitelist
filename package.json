@@ -8,8 +8,14 @@
     "src"
   ],
   "scripts": {
-    "prepublishOnly": "node generateDeployments.js",
-    "build": "forge build && node generateDeployments.js",
+    "testnet:prepublishOnly": "node generateDeployments.js 11155420",
+    "build": "forge build && node generateDeployments.js 11155420",
+    "local:prepublishOnly": "node generateDeployments.js 31337",
+    "local:deploy": "forge create --rpc-url http://127.0.0.1:8545 --chain 31337 --from $DEPLOYER_ADDRESS --private-key $DEPLOYER_PK src/Whitelist.sol:Whitelist --json | jq . | tee out/31337.json",
+    "testnet:deploy": "forge create --rpc-url wss://optimism-sepolia-rpc.publicnode.com --chain 11155420 --from $DEPLOYER_ADDRESS --private-key $DEPLOYER_PK src/Whitelist.sol:Whitelist  --json | jq . | tee out/11155420.json",
+    "testnet:verify": "forge verify-contract --skip-is-verified-check --watch --rpc-url wss://optimism-sepolia-rpc.publicnode.com --chain 11155420 --etherscan-api-key $SEPOLIA_OPTIMISM_ETHERSCAN $(cat out/11155420.json | jq -r .deployedTo) src/Whitelist.sol:Whitelist",
+    "testnet:fork": "anvil --chain-id 31337 --fork-url wss://optimism-sepolia-rpc.publicnode.com",
+    "testnet:generateDeployments": "node generateDeployments.js 11155420",
     "test": "forge test"
   },
   "dependencies": {

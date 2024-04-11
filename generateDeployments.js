@@ -2,7 +2,26 @@ const fs = require('fs').promises;
 const path = require('path');
 const ethers = require("ethers");
 
-const chainId = '11155420'; // OP Sepolia Chain ID
+const USAGE = [
+    'Examples:',
+    '  - OP Sepolia (Testnet)',
+    `      node ${path.basename(__filename)} 11155420`,
+    '  - Local Anvil fork',
+    `      node ${path.basename(__filename)} 31337`,
+].join('\n');
+
+function err(message) {
+    throw new Error(
+        [
+            message,
+            '---------------------------------------------',
+            USAGE,
+            '---------------------------------------------',
+        ].join('\n')
+    );
+}
+
+const [chainId = err('Missing argument "chainId"')] = process.argv.slice(2);
 
 async function readJSON(filePath) {
     return JSON.parse(await fs.readFile(filePath, 'utf8'));
