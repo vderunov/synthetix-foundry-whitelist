@@ -61,7 +61,7 @@ cast send --private-key $PK_ADMIN --rpc-url $RPC --value 0.1ether $AD_TEST1
 Apply for Whitelist with AD_TEST1
 
 ```shell
-cast send --rpc-url $RPC --private-key $PK_TEST1 $WL 'applyForWhitelist()'
+cast send --rpc-url $RPC --private-key $PK_TEST1 $WL 'submitApplication()'
 
 # => transaction details
 ```
